@@ -232,19 +232,36 @@ class TakumiMeasurementSystem {
             completeness: circleAnalysis.completeness
         };
         
+        // 呼吸安定性の安全な計算
         const recentBreathing = this.breathingData.slice(-10);
-        const breathingStability = this.faceAnalyzer.analyzeBreathingStability(recentBreathing);
+        let breathingStability = 0.5; // デフォルト値
+        if (recentBreathing.length >= 3) {
+            breathingStability = this.faceAnalyzer.analyzeBreathingStability(recentBreathing);
+        }
         
-        const averageCalmness = this.expressionData.reduce((sum, exp) => sum + exp.calmScore, 0) / this.expressionData.length;
+        // 表情データのチェックとデフォルト値設定
+        let averageCalmness = 0.5; // デフォルト値
+        if (this.expressionData.length > 0) {
+            averageCalmness = this.expressionData.reduce((sum, exp) => sum + (exp.calmScore || 0), 0) / this.expressionData.length;
+        }
+        
+        // ストレス抵抗値の安全な計算
+        let stressResistance = 0.5; // デフォルト値
         const stressExpressions = this.expressionData.slice(-20);
-        const stressResistance = 1 - (stressExpressions.reduce((sum, exp) => 
-            sum + this.faceAnalyzer.calculateStressLevel(exp), 0) / stressExpressions.length);
+        if (stressExpressions.length > 0) {
+            const totalStress = stressExpressions.reduce((sum, exp) => 
+                sum + (this.faceAnalyzer.calculateStressLevel(exp) || 0), 0);
+            stressResistance = Math.max(0, 1 - (totalStress / stressExpressions.length));
+        }
         
+        // NaNチェックを含めた最終的な値の設定
         this.measurements.physiological = {
-            breathingStability,
-            facialCalmness: averageCalmness,
-            stressResistance
+            breathingStability: isNaN(breathingStability) ? 0.5 : breathingStability,
+            facialCalmness: isNaN(averageCalmness) ? 0.5 : averageCalmness,
+            stressResistance: isNaN(stressResistance) ? 0.5 : stressResistance
         };
+        
+        console.log('Physiological measurements:', this.measurements.physiological);
     }
 
     displayResults(results) {
