@@ -14,6 +14,11 @@ app.use((req, res, next) => {
     next();
 });
 
+// Handle favicon.ico requests
+app.get('/favicon.ico', (req, res) => {
+    res.redirect('/favicon.svg');
+});
+
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, '..', 'index.html'));
 });

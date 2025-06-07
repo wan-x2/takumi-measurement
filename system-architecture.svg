@@ -1,0 +1,386 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="1200" height="1400" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Gradients -->
+    <linearGradient id="blueGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#4FC3F7;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2196F3;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="greenGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#81C784;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#4CAF50;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="orangeGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#FFB74D;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#FF9800;stop-opacity:1" />
+    </linearGradient>
+    <linearGradient id="purpleGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#BA68C8;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#9C27B0;stop-opacity:1" />
+    </linearGradient>
+    <!-- Arrow marker -->
+    <marker id="arrowhead" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333" />
+    </marker>
+  </defs>
+
+  <!-- Title -->
+  <text x="600" y="40" font-family="Arial, sans-serif" font-size="28" font-weight="bold" text-anchor="middle" fill="#333">
+    匠度測定システム (Takumi Measurement System) Architecture
+  </text>
+
+  <!-- Main System Box -->
+  <g id="main-system">
+    <rect x="450" y="80" width="300" height="100" rx="10" fill="url(#blueGrad)" stroke="#1976D2" stroke-width="2"/>
+    <text x="600" y="115" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="white">
+      TakumiMeasurementSystem
+    </text>
+    <text x="600" y="135" font-family="Arial" font-size="12" text-anchor="middle" fill="white">
+      (main.js)
+    </text>
+    <text x="600" y="155" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      オーケストレーター / 状態管理
+    </text>
+  </g>
+
+  <!-- Core Components -->
+  <!-- Camera Controller -->
+  <g id="camera-controller">
+    <rect x="50" y="250" width="200" height="80" rx="8" fill="url(#greenGrad)" stroke="#388E3C" stroke-width="2"/>
+    <text x="150" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+      CameraController
+    </text>
+    <text x="150" y="300" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      カメラアクセス管理
+    </text>
+    <text x="150" y="315" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      ビデオストリーム制御
+    </text>
+  </g>
+
+  <!-- Face Analyzer -->
+  <g id="face-analyzer">
+    <rect x="280" y="250" width="200" height="80" rx="8" fill="url(#greenGrad)" stroke="#388E3C" stroke-width="2"/>
+    <text x="380" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+      FaceAnalyzer
+    </text>
+    <text x="380" y="300" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      表情認識 (face-api.js)
+    </text>
+    <text x="380" y="315" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      呼吸パターン検出
+    </text>
+  </g>
+
+  <!-- Drawing Analyzer -->
+  <g id="drawing-analyzer">
+    <rect x="510" y="250" width="200" height="80" rx="8" fill="url(#greenGrad)" stroke="#388E3C" stroke-width="2"/>
+    <text x="610" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+      DrawingAnalyzer
+    </text>
+    <text x="610" y="300" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      円描画精度分析
+    </text>
+    <text x="610" y="315" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      手の震え検出
+    </text>
+  </g>
+
+  <!-- Stress Tester -->
+  <g id="stress-tester">
+    <rect x="740" y="250" width="200" height="80" rx="8" fill="url(#orangeGrad)" stroke="#F57C00" stroke-width="2"/>
+    <text x="840" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+      StressTester
+    </text>
+    <text x="840" y="300" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      視覚的妨害生成
+    </text>
+    <text x="840" y="315" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      音響ストレス制御
+    </text>
+  </g>
+
+  <!-- Character Animator -->
+  <g id="character-animator">
+    <rect x="970" y="250" width="200" height="80" rx="8" fill="url(#purpleGrad)" stroke="#7B1FA2" stroke-width="2"/>
+    <text x="1070" y="280" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+      CharacterAnimator
+    </text>
+    <text x="1070" y="300" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      ガイドキャラクター
+    </text>
+    <text x="1070" y="315" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      アニメーション制御
+    </text>
+  </g>
+
+  <!-- Evaluation Engine -->
+  <g id="evaluation-engine">
+    <rect x="450" y="400" width="300" height="80" rx="8" fill="url(#purpleGrad)" stroke="#7B1FA2" stroke-width="2"/>
+    <text x="600" y="430" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="white">
+      EvaluationEngine
+    </text>
+    <text x="600" y="450" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      総合スコア計算
+    </text>
+    <text x="600" y="465" font-family="Arial" font-size="11" text-anchor="middle" fill="white">
+      個別アドバイス生成
+    </text>
+  </g>
+
+  <!-- Arrows from Main System -->
+  <line x1="600" y1="180" x2="150" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="600" y1="180" x2="380" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="600" y1="180" x2="610" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="600" y1="180" x2="840" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="600" y1="180" x2="1070" y2="250" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Arrows to Evaluation Engine -->
+  <line x1="380" y1="330" x2="550" y2="400" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="610" y1="330" x2="600" y2="400" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="840" y1="330" x2="650" y2="400" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Test Flow Phases -->
+  <text x="600" y="550" font-family="Arial" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">
+    テスト実行フロー (60秒)
+  </text>
+
+  <!-- Phase 1: Calibration -->
+  <g id="phase1">
+    <rect x="50" y="580" width="250" height="150" rx="10" fill="#E3F2FD" stroke="#1976D2" stroke-width="2"/>
+    <text x="175" y="610" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#1976D2">
+      Phase 1: 校正
+    </text>
+    <text x="175" y="630" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">
+      (0-10秒)
+    </text>
+    <text x="60" y="655" font-family="Arial" font-size="12" fill="#333">
+      • 深呼吸5回実施
+    </text>
+    <text x="60" y="675" font-family="Arial" font-size="12" fill="#333">
+      • 基準呼吸パターン確立
+    </text>
+    <text x="60" y="695" font-family="Arial" font-size="12" fill="#333">
+      • 平静時表情キャプチャ
+    </text>
+    <text x="60" y="715" font-family="Arial" font-size="12" fill="#333">
+      • ベースライン設定
+    </text>
+  </g>
+
+  <!-- Phase 2: Drawing -->
+  <g id="phase2">
+    <rect x="330" y="580" width="250" height="150" rx="10" fill="#E8F5E9" stroke="#4CAF50" stroke-width="2"/>
+    <text x="455" y="610" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#4CAF50">
+      Phase 2: 描画
+    </text>
+    <text x="455" y="630" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">
+      (10-25秒)
+    </text>
+    <text x="340" y="655" font-family="Arial" font-size="12" fill="#333">
+      • 円の描画実行
+    </text>
+    <text x="340" y="675" font-family="Arial" font-size="12" fill="#333">
+      • 精度・滑らかさ追跡
+    </text>
+    <text x="340" y="695" font-family="Arial" font-size="12" fill="#333">
+      • 手の震え検出
+    </text>
+    <text x="340" y="715" font-family="Arial" font-size="12" fill="#333">
+      • 呼吸・表情モニタリング
+    </text>
+  </g>
+
+  <!-- Phase 3: Stress -->
+  <g id="phase3">
+    <rect x="610" y="580" width="250" height="150" rx="10" fill="#FFF3E0" stroke="#FF9800" stroke-width="2"/>
+    <text x="735" y="610" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#FF9800">
+      Phase 3: ストレス
+    </text>
+    <text x="735" y="630" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">
+      (25-45秒)
+    </text>
+    <text x="620" y="655" font-family="Arial" font-size="12" fill="#333">
+      • 視覚妨害開始
+    </text>
+    <text x="620" y="675" font-family="Arial" font-size="12" fill="#333">
+      • BGM歪み・加速
+    </text>
+    <text x="620" y="695" font-family="Arial" font-size="12" fill="#333">
+      • ストレス耐性測定
+    </text>
+    <text x="620" y="715" font-family="Arial" font-size="12" fill="#333">
+      • 表情変化追跡
+    </text>
+  </g>
+
+  <!-- Phase 4: Recovery -->
+  <g id="phase4">
+    <rect x="890" y="580" width="250" height="150" rx="10" fill="#F3E5F5" stroke="#9C27B0" stroke-width="2"/>
+    <text x="1015" y="610" font-family="Arial" font-size="16" font-weight="bold" text-anchor="middle" fill="#9C27B0">
+      Phase 4: 回復
+    </text>
+    <text x="1015" y="630" font-family="Arial" font-size="14" text-anchor="middle" fill="#333">
+      (45-60秒)
+    </text>
+    <text x="900" y="655" font-family="Arial" font-size="12" fill="#333">
+      • ストレッサー除去
+    </text>
+    <text x="900" y="675" font-family="Arial" font-size="12" fill="#333">
+      • 回復速度測定
+    </text>
+    <text x="900" y="695" font-family="Arial" font-size="12" fill="#333">
+      • 基準値への復帰確認
+    </text>
+    <text x="900" y="715" font-family="Arial" font-size="12" fill="#333">
+      • 最終呼吸評価
+    </text>
+  </g>
+
+  <!-- Flow arrows -->
+  <line x1="300" y1="655" x2="330" y2="655" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="580" y1="655" x2="610" y2="655" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+  <line x1="860" y1="655" x2="890" y2="655" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+
+  <!-- Scoring System -->
+  <g id="scoring">
+    <rect x="200" y="780" width="800" height="200" rx="10" fill="#FAFAFA" stroke="#666" stroke-width="2"/>
+    <text x="600" y="810" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">
+      スコアリングシステム
+    </text>
+    
+    <!-- Score Components -->
+    <rect x="220" y="830" width="230" height="120" rx="8" fill="#E1F5FE" stroke="#0288D1" stroke-width="1"/>
+    <text x="335" y="855" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#0288D1">
+      精度 (40%)
+    </text>
+    <text x="230" y="875" font-family="Arial" font-size="11" fill="#333">
+      • 円の正確性
+    </text>
+    <text x="230" y="895" font-family="Arial" font-size="11" fill="#333">
+      • 描画の滑らかさ
+    </text>
+    <text x="230" y="915" font-family="Arial" font-size="11" fill="#333">
+      • 速度の一貫性
+    </text>
+    <text x="230" y="935" font-family="Arial" font-size="11" fill="#333">
+      • 完成度
+    </text>
+
+    <rect x="470" y="830" width="230" height="120" rx="8" fill="#F3E5F5" stroke="#7B1FA2" stroke-width="1"/>
+    <text x="585" y="855" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#7B1FA2">
+      冷静さ (30%)
+    </text>
+    <text x="480" y="875" font-family="Arial" font-size="11" fill="#333">
+      • 呼吸の安定性
+    </text>
+    <text x="480" y="895" font-family="Arial" font-size="11" fill="#333">
+      • 表情の平静度
+    </text>
+    <text x="480" y="915" font-family="Arial" font-size="11" fill="#333">
+      • ストレス耐性
+    </text>
+    <text x="480" y="935" font-family="Arial" font-size="11" fill="#333">
+      • 感情制御
+    </text>
+
+    <rect x="720" y="830" width="230" height="120" rx="8" fill="#E8F5E9" stroke="#388E3C" stroke-width="1"/>
+    <text x="835" y="855" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#388E3C">
+      器用さ (30%)
+    </text>
+    <text x="730" y="875" font-family="Arial" font-size="11" fill="#333">
+      • 手の制御
+    </text>
+    <text x="730" y="895" font-family="Arial" font-size="11" fill="#333">
+      • 震えの少なさ
+    </text>
+    <text x="730" y="915" font-family="Arial" font-size="11" fill="#333">
+      • 回復速度
+    </text>
+    <text x="730" y="935" font-family="Arial" font-size="11" fill="#333">
+      • 適応能力
+    </text>
+  </g>
+
+  <!-- Rank System -->
+  <g id="ranks">
+    <rect x="200" y="1010" width="800" height="120" rx="10" fill="#FFF" stroke="#666" stroke-width="2"/>
+    <text x="600" y="1040" font-family="Arial" font-size="18" font-weight="bold" text-anchor="middle" fill="#333">
+      ランクシステム
+    </text>
+    
+    <text x="250" y="1070" font-family="Arial" font-size="14" font-weight="bold" fill="#FFD700">SSS: 96-100</text>
+    <text x="250" y="1090" font-family="Arial" font-size="11" fill="#333">匠レベル</text>
+    
+    <text x="400" y="1070" font-family="Arial" font-size="14" font-weight="bold" fill="#C0C0C0">S: 86-95</text>
+    <text x="400" y="1090" font-family="Arial" font-size="11" fill="#333">プロレベル</text>
+    
+    <text x="550" y="1070" font-family="Arial" font-size="14" font-weight="bold" fill="#CD7F32">A: 71-85</text>
+    <text x="550" y="1090" font-family="Arial" font-size="11" fill="#333">良好</text>
+    
+    <text x="700" y="1070" font-family="Arial" font-size="14" font-weight="bold" fill="#4169E1">B: 41-70</text>
+    <text x="700" y="1090" font-family="Arial" font-size="11" fill="#333">平均的</text>
+    
+    <text x="850" y="1070" font-family="Arial" font-size="14" font-weight="bold" fill="#32CD32">C: 0-40</text>
+    <text x="850" y="1090" font-family="Arial" font-size="11" fill="#333">要改善</text>
+  </g>
+
+  <!-- External Dependencies -->
+  <g id="dependencies">
+    <rect x="50" y="1170" width="300" height="100" rx="8" fill="#FFEBEE" stroke="#C62828" stroke-width="2"/>
+    <text x="200" y="1195" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#C62828">
+      外部依存関係
+    </text>
+    <text x="60" y="1215" font-family="Arial" font-size="11" fill="#333">
+      • TensorFlow.js v4.11.0
+    </text>
+    <text x="60" y="1235" font-family="Arial" font-size="11" fill="#333">
+      • face-api.js v1.7.12
+    </text>
+    <text x="60" y="1255" font-family="Arial" font-size="11" fill="#333">
+      • Express.js v5.1.0 (HTTPS)
+    </text>
+  </g>
+
+  <!-- Technical Features -->
+  <g id="features">
+    <rect x="400" y="1170" width="400" height="100" rx="8" fill="#E8F5E9" stroke="#2E7D32" stroke-width="2"/>
+    <text x="600" y="1195" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#2E7D32">
+      技術的特徴
+    </text>
+    <text x="410" y="1215" font-family="Arial" font-size="11" fill="#333">
+      • リアルタイム顔認識・表情分析
+    </text>
+    <text x="410" y="1235" font-family="Arial" font-size="11" fill="#333">
+      • Canvas APIによる描画追跡
+    </text>
+    <text x="410" y="1255" font-family="Arial" font-size="11" fill="#333">
+      • Web Audio APIによる音響制御
+    </text>
+  </g>
+
+  <!-- Application Purpose -->
+  <g id="purpose">
+    <rect x="850" y="1170" width="300" height="100" rx="8" fill="#F3E5F5" stroke="#6A1B9A" stroke-width="2"/>
+    <text x="1000" y="1195" font-family="Arial" font-size="14" font-weight="bold" text-anchor="middle" fill="#6A1B9A">
+      アプリケーション用途
+    </text>
+    <text x="860" y="1215" font-family="Arial" font-size="11" fill="#333">
+      • 精密動作制御評価
+    </text>
+    <text x="860" y="1235" font-family="Arial" font-size="11" fill="#333">
+      • ストレス管理能力測定
+    </text>
+    <text x="860" y="1255" font-family="Arial" font-size="11" fill="#333">
+      • 運転適性スクリーニング
+    </text>
+  </g>
+
+  <!-- Data Flow Legend -->
+  <g id="legend">
+    <rect x="50" y="1310" width="250" height="60" rx="5" fill="#F5F5F5" stroke="#999" stroke-width="1"/>
+    <text x="60" y="1330" font-family="Arial" font-size="12" font-weight="bold" fill="#333">凡例:</text>
+    <line x1="60" y1="1350" x2="100" y2="1350" stroke="#333" stroke-width="2" marker-end="url(#arrowhead)"/>
+    <text x="110" y="1355" font-family="Arial" font-size="11" fill="#333">データフロー / 制御</text>
+  </g>
+</svg>

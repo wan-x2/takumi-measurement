@@ -60,10 +60,10 @@ class TakumiMeasurementSystem {
         this.stressTester.initialize();
         
         this.characterAnimator.updateCharacterState(null, 'ready');
-        this.startSequence();
+        await this.startSequence();
     }
 
-    startSequence() {
+    async startSequence() {
         this.timer = 60;
         this.updateTimer();
         
@@ -107,7 +107,7 @@ class TakumiMeasurementSystem {
     async calibrationPhase() {
         console.log('Calibration phase started');
         this.breathingIndicator.style.display = 'block';
-        this.stressTester.startBackgroundMusic();
+        await this.stressTester.startBackgroundMusic();
         
         let breathCount = 0;
         const breathInterval = setInterval(async () => {
@@ -146,10 +146,21 @@ class TakumiMeasurementSystem {
         this.drawingAnalyzer.reset();
         this.canvas.style.border = '2px solid #4ecdc4';
         
+        // Show the circle guide
+        const circleGuide = document.getElementById('circleGuide');
+        if (circleGuide) {
+            circleGuide.style.display = 'block';
+        }
+        
         const monitorInterval = setInterval(async () => {
             if (this.currentPhase !== 'drawing') {
                 clearInterval(monitorInterval);
                 this.canvas.style.border = 'none';
+                // Hide the circle guide
+                const circleGuide = document.getElementById('circleGuide');
+                if (circleGuide) {
+                    circleGuide.style.display = 'none';
+                }
                 return;
             }
             
@@ -300,10 +311,18 @@ class TakumiMeasurementSystem {
         this.currentPhase = 'idle';
         this.phaseIndicator.textContent = '準備中';
         
+        // Clear the canvas for a fresh start
+        this.drawingAnalyzer.clearCanvas();
         this.drawingAnalyzer.reset();
         this.characterAnimator.reset();
         this.resultsPanel.style.display = 'none';
         this.startButton.disabled = false;
+        
+        // Hide circle guide
+        const circleGuide = document.getElementById('circleGuide');
+        if (circleGuide) {
+            circleGuide.style.display = 'none';
+        }
         
         this.stressTester.stopBackgroundMusic();
         this.stressTester.stopStressTest();

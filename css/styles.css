@@ -100,6 +100,8 @@ main {
 #drawingCanvas {
     cursor: crosshair;
     border-radius: 8px;
+    position: relative;
+    z-index: 10;
 }
 
 .circle-guide {
@@ -109,6 +111,10 @@ main {
     border: 2px dashed rgba(255, 255, 255, 0.3);
     border-radius: 50%;
     pointer-events: none;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: none;
 }
 
 .stress-container {
@@ -119,7 +125,8 @@ main {
     display: none;
     grid-template-columns: repeat(3, 1fr);
     gap: 20px;
-    z-index: 10;
+    z-index: 5;
+    pointer-events: none;
 }
 
 .stress-image {

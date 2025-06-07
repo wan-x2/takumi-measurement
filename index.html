@@ -4,13 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>匠度測定システム - Takumi Measurement System</title>
+    <link rel="icon" type="image/svg+xml" href="favicon.svg">
     <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
     <div class="container">
         <header>
             <h1>匠度測定システム</h1>
-            <p class="subtitle">「悟」- 60秒であなたの現状を悟らせる</p>
+            <p class="subtitle">「円」（えん）- 60秒であなたの現状を悟らせる</p>
         </header>
 
         <main>
@@ -84,7 +85,7 @@
         <audio id="bgMusic" src="sound/backmusic.mp3" loop></audio>
     </div>
 
-    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+    <!-- face-api.jsにはTensorFlow.jsが含まれているため、個別のTensorFlow.js読み込みは不要 -->
     <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
     <script src="js/camera-controller.js"></script>
     <script src="js/face-analyzer.js"></script>

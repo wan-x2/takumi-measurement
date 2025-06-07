@@ -1,5 +1,7 @@
 # Takumi Measurement System - 匠度測定システム
 
+[日本語版 README はこちら](README_ja.md)
+
 A 60-second precision measurement system that evaluates your "Takumi-do" (craftsman level) through mouse drawing tasks, facial analysis, and stress response.
 
 ## Features

@@ -34,16 +34,37 @@ class StressTester {
         }
     }
 
-    startBackgroundMusic() {
-        if (this.audioContext && this.audioContext.state === 'suspended') {
-            this.audioContext.resume();
-        }
-        
-        this.bgMusic.playbackRate = this.originalTempo;
-        this.bgMusic.volume = this.originalVolume;
-        this.bgMusic.play().catch(error => {
+    async startBackgroundMusic() {
+        try {
+            // For Mac compatibility, ensure audio context is resumed
+            if (this.audioContext) {
+                if (this.audioContext.state === 'suspended') {
+                    await this.audioContext.resume();
+                }
+            }
+            
+            // Set audio properties before playing
+            this.bgMusic.playbackRate = this.originalTempo;
+            this.bgMusic.volume = this.originalVolume;
+            
+            // Try to play with user gesture requirement handling
+            const playPromise = this.bgMusic.play();
+            
+            if (playPromise !== undefined) {
+                await playPromise;
+                console.log('Background music started successfully');
+            }
+        } catch (error) {
             console.error('Failed to start background music:', error);
-        });
+            // Retry on next user interaction
+            document.addEventListener('click', async () => {
+                try {
+                    await this.bgMusic.play();
+                } catch (e) {
+                    console.error('Audio playback still failed:', e);
+                }
+            }, { once: true });
+        }
     }
 
     stopBackgroundMusic() {

@@ -27,7 +27,7 @@ class DrawingAnalyzer {
         this.points = [];
         this.startTime = null;
         this.lastPoint = null;
-        this.clearCanvas();
+        // Don't clear canvas here - preserve previous drawings
         this.drawTargetCircle();
     }
 
@@ -36,14 +36,8 @@ class DrawingAnalyzer {
     }
 
     drawTargetCircle() {
-        this.ctx.save();
-        this.ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
-        this.ctx.lineWidth = 2;
-        this.ctx.setLineDash([5, 5]);
-        this.ctx.beginPath();
-        this.ctx.arc(this.targetCenter.x, this.targetCenter.y, this.targetRadius, 0, Math.PI * 2);
-        this.ctx.stroke();
-        this.ctx.restore();
+        // Don't draw anything - the circle guide is handled by CSS
+        // This prevents the perfect circle from being drawn on canvas
     }
 
     startDrawing(e) {
@@ -77,6 +71,10 @@ class DrawingAnalyzer {
         };
         
         this.points.push(point);
+        
+        // Re-set stroke style to ensure it's visible
+        this.ctx.strokeStyle = '#4ecdc4';
+        this.ctx.lineWidth = 3;
         
         this.ctx.lineTo(point.x, point.y);
         this.ctx.stroke();
