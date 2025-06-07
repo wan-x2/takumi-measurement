@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>匠度測定システム - Takumi Measurement System</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>匠度測定システム</h1>
+            <p class="subtitle">「悟」- 60秒であなたの現状を悟らせる</p>
+        </header>
+
+        <main>
+            <div class="video-container">
+                <video id="userVideo" autoplay muted></video>
+                <div class="breathing-indicator" id="breathingIndicator">
+                    <div class="breath-circle"></div>
+                    <span class="breath-count">0/5</span>
+                </div>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="drawingCanvas" width="600" height="600"></canvas>
+                <div class="circle-guide" id="circleGuide"></div>
+            </div>
+
+            <div class="stress-container" id="stressContainer">
+                <img class="stress-image" id="stressImage1" src="image/irritating1.png" alt="">
+                <img class="stress-image" id="stressImage2" src="image/irritating2.png" alt="">
+                <img class="stress-image" id="stressImage3" src="image/irritating3.png" alt="">
+            </div>
+
+            <div class="character-container">
+                <img id="characterCat" src="image/c.png" alt="Guide Cat">
+                <div class="character-message" id="characterMessage"></div>
+            </div>
+
+            <div class="control-panel">
+                <button id="startButton" class="start-button">測定開始</button>
+                <div class="timer" id="timer">60</div>
+                <div class="phase-indicator" id="phaseIndicator">準備中</div>
+            </div>
+
+            <div class="results-panel" id="resultsPanel">
+                <h2>測定結果</h2>
+                <div class="score-display">
+                    <div class="takumi-score">
+                        <span class="score-label">匠度</span>
+                        <span class="score-value" id="takumiScore">--</span>
+                        <span class="score-rank" id="scoreRank">-</span>
+                    </div>
+                </div>
+                <div class="score-breakdown">
+                    <div class="score-item">
+                        <span class="item-label">精密さ</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="precisionBar"></div>
+                        </div>
+                        <span class="item-value" id="precisionScore">--</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="item-label">落ち着き</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="calmnessBar"></div>
+                        </div>
+                        <span class="item-value" id="calmnessScore">--</span>
+                    </div>
+                    <div class="score-item">
+                        <span class="item-label">器用さ</span>
+                        <div class="progress-bar">
+                            <div class="progress-fill" id="dexterityBar"></div>
+                        </div>
+                        <span class="item-value" id="dexterityScore">--</span>
+                    </div>
+                </div>
+                <div class="advice" id="advice"></div>
+                <button id="retryButton" class="retry-button">もう一度測定</button>
+            </div>
+        </main>
+
+        <audio id="bgMusic" src="sound/backmusic.mp3" loop></audio>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0/dist/tf.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    <script src="js/camera-controller.js"></script>
+    <script src="js/face-analyzer.js"></script>
+    <script src="js/drawing-analyzer.js"></script>
+    <script src="js/stress-tester.js"></script>
+    <script src="js/evaluation-engine.js"></script>
+    <script src="js/character-animator.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>
