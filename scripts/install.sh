@@ -66,52 +66,6 @@ for model in "${MODELS[@]}"; do
     fi
 done
 
-# Create placeholder assets if they don't exist
-echo "Creating placeholder assets..."
-mkdir -p image sound
-
-# Create placeholder images if they don't exist
-if [ ! -f "image/c.png" ]; then
-    echo "Creating placeholder cat image..."
-    # Create a simple SVG cat and convert to PNG using ImageMagick if available
-    if command -v convert &> /dev/null; then
-        cat > image/c.svg << 'EOF'
-<svg width="150" height="150" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="75" cy="75" r="40" fill="#FFB6C1" stroke="#000" stroke-width="2"/>
-  <circle cx="60" cy="65" r="5" fill="#000"/>
-  <circle cx="90" cy="65" r="5" fill="#000"/>
-  <path d="M 75 80 Q 65 90 55 85" fill="none" stroke="#000" stroke-width="2"/>
-  <path d="M 75 80 Q 85 90 95 85" fill="none" stroke="#000" stroke-width="2"/>
-  <path d="M 35 40 L 45 60 L 55 50 Z" fill="#FFB6C1" stroke="#000" stroke-width="2"/>
-  <path d="M 115 40 L 105 60 L 95 50 Z" fill="#FFB6C1" stroke="#000" stroke-width="2"/>
-</svg>
-EOF
-        convert image/c.svg image/c.png
-        rm image/c.svg
-    else
-        echo "Note: ImageMagick not found. Please add a cat image at image/c.png"
-    fi
-fi
-
-# Create placeholder irritating images
-for i in 1 2 3; do
-    if [ ! -f "image/irritating$i.png" ]; then
-        echo "Creating placeholder irritating image $i..."
-        if command -v convert &> /dev/null; then
-            # Create random noise pattern
-            convert -size 200x200 xc: +noise Random "image/irritating$i.png"
-        else
-            echo "Note: Please add irritating images at image/irritating$i.png"
-        fi
-    fi
-done
-
-# Create placeholder background music if it doesn't exist
-if [ ! -f "sound/backmusic.mp3" ]; then
-    echo "Note: Please add background music at sound/backmusic.mp3"
-    echo "The system will work without it, but the experience will be limited."
-fi
-
 echo ""
 echo "Installation complete!"
 echo ""

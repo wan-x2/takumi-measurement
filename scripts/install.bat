@@ -22,50 +22,32 @@ if %errorlevel% neq 0 (
     exit /b 1
 )
 
-echo npm version:
-npm -v
+@REM echo npm version:
+@REM npm -v 
 
-REM Install dependencies
-echo.
-echo Installing dependencies...
-call npm install
+REM Check if both certificate files exist
+if not exist "certs\server.key" goto generate_certs
+if not exist "certs\server.crt" goto generate_certs
+goto certs_exist
 
-REM Check if OpenSSL is installed
-where openssl >nul 2>nul
+:generate_certs
+echo Generating SSL certificates using Git Bash...
+if not exist "certs" mkdir certs
+
+bash -c "if command -v openssl >/dev/null 2>&1; then openssl req -x509 -newkey rsa:2048 -keyout certs/server.key -out certs/server.crt -days 365 -nodes -subj '/C=JP/ST=Tokyo/L=Tokyo/O=Takumi/CN=localhost' && echo 'SSL certificates generated successfully.'; else echo 'OpenSSL not found in Git Bash'; exit 1; fi"
+
 if %errorlevel% neq 0 (
-    echo.
-    echo Warning: OpenSSL is not installed or not in PATH.
-    echo We'll try to generate certificates anyway...
+    echo Failed to generate certificates using Git Bash.
+    echo Please ensure Git for Windows is installed and in PATH.
+    pause
+    exit /b 1
 )
+goto end_cert_check
 
-REM Generate SSL certificates if they don't exist
-if not exist "certs\server.key" (
-    echo.
-    echo Generating SSL certificates...
-    if not exist "certs" mkdir certs
-    
-    REM Try OpenSSL first
-    where openssl >nul 2>nul
-    if %errorlevel% equ 0 (
-        openssl req -x509 -newkey rsa:2048 -keyout certs\server.key -out certs\server.crt -days 365 -nodes -subj "/C=JP/ST=Tokyo/L=Tokyo/O=Takumi/CN=localhost"
-    ) else (
-        REM If OpenSSL not available, use PowerShell to generate self-signed certificate
-        echo OpenSSL not found. Using PowerShell to generate certificates...
-        powershell -Command "$cert = New-SelfSignedCertificate -DnsName 'localhost' -CertStoreLocation 'Cert:\CurrentUser\My' -NotAfter (Get-Date).AddYears(1); $pwd = ConvertTo-SecureString -String 'password' -Force -AsPlainText; Export-PfxCertificate -Cert $cert -FilePath 'certs\temp.pfx' -Password $pwd; $cert | Remove-Item"
-        
-        REM Note: PowerShell method creates PFX, would need conversion to PEM
-        echo.
-        echo Note: PowerShell certificate generation requires additional conversion.
-        echo For best results, please install OpenSSL and run this script again.
-        echo Download OpenSSL from: https://slproweb.com/products/Win32OpenSSL.html
-    )
-    
-    if exist "certs\server.key" (
-        echo SSL certificates generated successfully.
-    )
-) else (
-    echo SSL certificates already exist.
-)
+:certs_exist
+echo SSL certificates already exist.
+
+:end_cert_check
 
 REM Download face-api.js models
 echo.
@@ -76,35 +58,11 @@ REM Run the Node.js model downloader
 echo Downloading face-api.js models...
 node js\download-models.js
 
-REM Create placeholder directories
+REM Install dependencies
 echo.
-echo Creating placeholder directories...
-if not exist "image" mkdir image
-if not exist "sound" mkdir sound
-
-REM Check for required images
-if not exist "image\c.png" (
-    echo.
-    echo Note: Please add a cat image at image\c.png
-    echo You can download one from the original repository or use any cat image.
-)
-
-REM Check for irritating images
-set missing_images=0
-if not exist "image\irritating1.png" set /a missing_images+=1
-if not exist "image\irritating2.png" set /a missing_images+=1
-if not exist "image\irritating3.png" set /a missing_images+=1
-
-if %missing_images% gtr 0 (
-    echo Note: Please add %missing_images% irritating image(s) in the image folder
-    echo Files needed: irritating1.png, irritating2.png, irritating3.png
-)
-
-REM Check for background music
-if not exist "sound\backmusic.mp3" (
-    echo Note: Please add background music at sound\backmusic.mp3
-    echo The system will work without it, but the experience will be limited.
-)
+echo Installing dependencies...
+call npm install
+pause
 
 echo.
 echo ===================================
@@ -120,4 +78,3 @@ echo.
 echo Note: You will see a certificate warning. This is normal for self-signed certificates.
 echo Click 'Advanced' and 'Proceed to localhost' to continue.
 echo.
-pause
