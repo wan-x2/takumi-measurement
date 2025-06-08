@@ -115,7 +115,7 @@ echo To start the server, run:
 echo   node js\setup-https.js
 echo.
 echo Then open your browser and navigate to:
-echo   https://localhost:8446
+echo   https://localhost:8443
 echo.
 echo Note: You will see a certificate warning. This is normal for self-signed certificates.
 echo Click 'Advanced' and 'Proceed to localhost' to continue.

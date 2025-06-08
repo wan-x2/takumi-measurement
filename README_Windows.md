@@ -70,7 +70,7 @@ node js\setup-https.js
 
 ブラウザで以下のURLにアクセス：
 ```
-https://localhost:8446
+https://localhost:8443
 ```
 
 **注意**: 自己署名証明書を使用しているため、ブラウザで警告が表示されます。
@@ -83,10 +83,10 @@ https://localhost:8446
 - 環境変数PATHにOpenSSLのbinフォルダを追加してください
 - または、PowerShellスクリプトを使用してください
 
-### ポート8446が使用中
+### ポート8443が使用中
 `js\setup-https.js`を編集して、別のポート番号に変更してください：
 ```javascript
-const PORT = 8447; // 別のポート番号
+const PORT = 8444; // 別のポート番号
 ```
 
 ### カメラが動作しない

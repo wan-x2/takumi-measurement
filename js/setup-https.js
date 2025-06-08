@@ -4,7 +4,7 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 8446;
+const PORT = 8443;
 
 // Add explicit routes for model files
 app.get('/models/:file', (req, res) => {

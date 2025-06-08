@@ -37,7 +37,7 @@ if not exist "models\tiny_face_detector_model-weights_manifest.json" (
 echo.
 echo Starting HTTPS server...
 echo.
-echo Server will be available at: https://localhost:8446
+echo Server will be available at: https://localhost:8443
 echo.
 echo Press Ctrl+C to stop the server.
 echo.
