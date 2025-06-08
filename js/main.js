@@ -40,11 +40,45 @@ class TakumiMeasurementSystem {
         console.log('Start button element:', this.startButton);
         console.log('Start button computed style:', window.getComputedStyle(this.startButton));
         
+        // iOS audio handling - must be initialized on user interaction
+        const initializeAudioForIOS = async () => {
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            
+            if (isIOS) {
+                console.log('iOS detected, initializing audio...');
+                
+                // Initialize audio context
+                if (!this.stressTester.audioContext) {
+                    this.stressTester.initialize();
+                }
+                
+                // Play and immediately pause to unlock audio on iOS
+                const bgMusic = document.getElementById('bgMusic');
+                if (bgMusic) {
+                    bgMusic.volume = 0.01; // Very low volume for initialization
+                    try {
+                        await bgMusic.play();
+                        bgMusic.pause();
+                        bgMusic.currentTime = 0;
+                        bgMusic.volume = 0.3; // Reset to normal volume
+                        console.log('iOS audio unlocked successfully');
+                    } catch (e) {
+                        console.warn('iOS audio initialization failed:', e);
+                    }
+                }
+            }
+        };
+        
         // クリックイベントの詳細なデバッグ
-        this.startButton.addEventListener('click', (e) => {
+        this.startButton.addEventListener('click', async (e) => {
             console.log('Start button clicked!', e);
             console.log('Click coordinates:', e.clientX, e.clientY);
             console.log('Button disabled state:', this.startButton.disabled);
+            
+            // Initialize audio for iOS on first user interaction
+            await initializeAudioForIOS();
+            
             this.startMeasurement();
         });
         
@@ -58,9 +92,13 @@ class TakumiMeasurementSystem {
             console.log('Pointer down on start button');
         });
         
-        document.getElementById('retryButton').addEventListener('click', (e) => {
+        document.getElementById('retryButton').addEventListener('click', async (e) => {
             console.log('Retry button clicked!', e);
             e.stopPropagation();
+            
+            // Initialize audio for iOS on retry
+            await initializeAudioForIOS();
+            
             this.reset();
         });
         

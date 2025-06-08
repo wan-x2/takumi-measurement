@@ -49,10 +49,16 @@ try {
         cert: fs.readFileSync(path.join(__dirname, '..', 'certs', 'server.crt'))
     };
 
-    https.createServer(serverOptions, app).listen(PORT, () => {
-        console.log(`Takumi Measurement System running at https://localhost:${PORT}`);
+    // https.createServer(serverOptions, app).listen(PORT, () => {
+    //     console.log(`Takumi Measurement System running at https://localhost:${PORT}`);
+    //     console.log('If you see a certificate warning, proceed to the site anyway (this is expected with self-signed certificates)');
+    // });
+    https.createServer(serverOptions, app).listen(PORT, '0.0.0.0', () => {
+        console.log(`Takumi Measurement System running at https://0.0.0.0:${PORT}`);
+        console.log(`Local access: https://localhost:${PORT}`);
+        console.log(`Network access: https://[YOUR_IP_ADDRESS]:${PORT}`);
         console.log('If you see a certificate warning, proceed to the site anyway (this is expected with self-signed certificates)');
-    });
+    });    
 } catch (error) {
     console.error('Failed to start HTTPS server. Make sure SSL certificates are generated.');
     console.error('Run: openssl req -x509 -newkey rsa:2048 -keyout certs/server.key -out certs/server.crt -days 365 -nodes');

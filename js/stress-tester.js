@@ -36,16 +36,36 @@ class StressTester {
 
     async startBackgroundMusic() {
         try {
-            // For Mac compatibility, ensure audio context is resumed
+            // Detect iOS
+            const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) || 
+                         (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+            
+            // For iOS and Mac compatibility, ensure audio context is resumed
             if (this.audioContext) {
                 if (this.audioContext.state === 'suspended') {
                     await this.audioContext.resume();
+                    console.log('Audio context resumed');
                 }
             }
             
             // Set audio properties before playing
             this.bgMusic.playbackRate = this.originalTempo;
             this.bgMusic.volume = this.originalVolume;
+            
+            // For iOS, ensure the audio element is ready
+            if (isIOS && this.bgMusic.readyState < 2) {
+                console.log('iOS: Waiting for audio to be ready...');
+                await new Promise((resolve) => {
+                    const checkReady = () => {
+                        if (this.bgMusic.readyState >= 2) {
+                            resolve();
+                        } else {
+                            setTimeout(checkReady, 100);
+                        }
+                    };
+                    checkReady();
+                });
+            }
             
             // Try to play with user gesture requirement handling
             const playPromise = this.bgMusic.play();
@@ -56,14 +76,13 @@ class StressTester {
             }
         } catch (error) {
             console.error('Failed to start background music:', error);
-            // Retry on next user interaction
-            document.addEventListener('click', async () => {
-                try {
-                    await this.bgMusic.play();
-                } catch (e) {
-                    console.error('Audio playback still failed:', e);
-                }
-            }, { once: true });
+            
+            // For iOS, the error might be due to autoplay policy
+            if (error.name === 'NotAllowedError') {
+                console.log('Audio playback blocked by browser policy');
+            }
+            
+            // Don't add another click listener if on iOS, as it's handled in main.js
         }
     }
 
