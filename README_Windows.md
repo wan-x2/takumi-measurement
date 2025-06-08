@@ -89,15 +89,6 @@ node js\download-models.js
 ```
 を再実行してください。
 
-## 必要なファイル
-
-以下のファイルは手動で追加する必要があります：
-- `image/c.png` - 猫のキャラクター画像
-- `image/irritating1.png` - ストレス画像1
-- `image/irritating2.png` - ストレス画像2
-- `image/irritating3.png` - ストレス画像3
-- `sound/backmusic.mp3` - BGM（オプション）
-
 ## セキュリティに関する注意
 
 このアプリケーションは自己署名証明書を使用しています。本番環境では、正式な証明書を使用してください。
