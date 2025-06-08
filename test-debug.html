@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug Test</title>
+</head>
+<body>
+    <h1>Debug Test</h1>
+    <button id="testButton">Test Button</button>
+    <div id="output"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        const testButton = document.getElementById('testButton');
+        
+        // Test button click
+        testButton.addEventListener('click', () => {
+            output.innerHTML += '<p>Button clicked!</p>';
+        });
+        
+        // Test face-api loading
+        output.innerHTML += '<p>face-api loaded: ' + (typeof faceapi !== 'undefined') + '</p>';
+        
+        // Test model loading
+        async function testModels() {
+            try {
+                await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
+                output.innerHTML += '<p>Models loaded successfully!</p>';
+            } catch (error) {
+                output.innerHTML += '<p style="color: red;">Model loading error: ' + error + '</p>';
+            }
+        }
+        
+        testModels();
+        
+        // Check for any console errors
+        window.addEventListener('error', (e) => {
+            output.innerHTML += '<p style="color: red;">Error: ' + e.message + '</p>';
+        });
+    </script>
+</body>
+</html>

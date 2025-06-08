@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>包括的デバッグ - 測定開始ボタン</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        .debug-panel {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.9);
+            border: 2px solid #4ecdc4;
+            padding: 20px;
+            border-radius: 10px;
+            max-width: 400px;
+            max-height: 80vh;
+            overflow-y: auto;
+            z-index: 9999;
+        }
+        .debug-log {
+            font-family: monospace;
+            font-size: 12px;
+            line-height: 1.5;
+        }
+        .debug-error {
+            color: #ff6b6b;
+        }
+        .debug-success {
+            color: #4ecdc4;
+        }
+        .debug-info {
+            color: #fff;
+        }
+        .debug-warning {
+            color: #ffd700;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>測定開始ボタン 包括的デバッグ</h1>
+        </header>
+
+        <main>
+            <div class="control-panel" style="position: relative; transform: none; left: auto;">
+                <button id="startButton" class="start-button">測定開始</button>
+                <div class="timer" id="timer">60</div>
+                <div class="phase-indicator" id="phaseIndicator">準備中</div>
+            </div>
+
+            <div class="video-container">
+                <video id="userVideo" autoplay muted></video>
+            </div>
+
+            <div class="canvas-container">
+                <canvas id="drawingCanvas" width="600" height="600"></canvas>
+            </div>
+
+            <div class="character-container">
+                <img id="characterCat" src="image/c.png" alt="Guide Cat">
+                <div class="character-message" id="characterMessage"></div>
+            </div>
+
+            <div class="stress-container" id="stressContainer">
+                <img class="stress-image" id="stressImage1" src="image/irritating1.png" alt="">
+                <img class="stress-image" id="stressImage2" src="image/irritating2.png" alt="">
+                <img class="stress-image" id="stressImage3" src="image/irritating3.png" alt="">
+            </div>
+
+            <div class="results-panel" id="resultsPanel">
+                <h2>測定結果</h2>
+                <button id="retryButton" class="retry-button">もう一度測定</button>
+            </div>
+        </main>
+    </div>
+
+    <div class="debug-panel">
+        <h3>デバッグログ</h3>
+        <div id="debugLog" class="debug-log"></div>
+    </div>
+
+    <audio id="bgMusic" src="sound/backmusic.mp3" loop></audio>
+
+    <script>
+        const debugLog = document.getElementById('debugLog');
+        let logCount = 0;
+
+        function log(message, type = 'info') {
+            const timestamp = new Date().toLocaleTimeString('ja-JP', { hour12: false, millisecond: true });
+            const className = `debug-${type}`;
+            const logEntry = document.createElement('div');
+            logEntry.className = className;
+            logEntry.textContent = `[${timestamp}] ${message}`;
+            debugLog.appendChild(logEntry);
+            debugLog.scrollTop = debugLog.scrollHeight;
+            logCount++;
+            
+            // コンソールにも出力
+            console.log(`[${type.toUpperCase()}] ${message}`);
+        }
+
+        // グローバルエラーハンドラー
+        window.addEventListener('error', (e) => {
+            log(`JavaScript エラー: ${e.message} (${e.filename}:${e.lineno}:${e.colno})`, 'error');
+        });
+
+        window.addEventListener('unhandledrejection', (e) => {
+            log(`未処理のPromiseエラー: ${e.reason}`, 'error');
+        });
+
+        // ボタンの状態を詳細にチェック
+        function checkButtonState() {
+            const button = document.getElementById('startButton');
+            if (!button) {
+                log('測定開始ボタンが見つかりません！', 'error');
+                return;
+            }
+
+            const computedStyle = window.getComputedStyle(button);
+            const rect = button.getBoundingClientRect();
+
+            log('=== ボタン状態チェック ===', 'info');
+            log(`disabled属性: ${button.disabled}`, button.disabled ? 'warning' : 'success');
+            log(`display: ${computedStyle.display}`, computedStyle.display === 'none' ? 'warning' : 'success');
+            log(`visibility: ${computedStyle.visibility}`, computedStyle.visibility === 'hidden' ? 'warning' : 'success');
+            log(`opacity: ${computedStyle.opacity}`, parseFloat(computedStyle.opacity) < 1 ? 'warning' : 'info');
+            log(`pointer-events: ${computedStyle.pointerEvents}`, computedStyle.pointerEvents === 'none' ? 'warning' : 'success');
+            log(`z-index: ${computedStyle.zIndex}`, 'info');
+            log(`位置: top=${rect.top}, left=${rect.left}, width=${rect.width}, height=${rect.height}`, 'info');
+            log(`画面内に表示: ${rect.width > 0 && rect.height > 0 && rect.top >= 0 && rect.left >= 0}`, 'info');
+
+            // イベントリスナーのテスト
+            button.addEventListener('click', function testClick() {
+                log('✓ ボタンクリックイベント発火！', 'success');
+                button.removeEventListener('click', testClick);
+            });
+
+            // クリック可能性のテスト
+            const elementAtPoint = document.elementFromPoint(
+                rect.left + rect.width / 2,
+                rect.top + rect.height / 2
+            );
+            log(`クリック位置の要素: ${elementAtPoint ? elementAtPoint.tagName + (elementAtPoint.id ? '#' + elementAtPoint.id : '') : 'なし'}`, 'info');
+            log(`クリック可能: ${elementAtPoint === button ? 'はい' : 'いいえ（他の要素が上にある）'}`, elementAtPoint === button ? 'success' : 'error');
+        }
+
+        // スクリプトの読み込み状況を監視
+        log('=== スクリプト読み込み開始 ===', 'info');
+
+        // face-api.jsの読み込み
+        const loadFaceApi = new Promise((resolve, reject) => {
+            const script = document.createElement('script');
+            script.src = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js';
+            script.onload = () => {
+                log('✓ face-api.js 読み込み成功', 'success');
+                resolve();
+            };
+            script.onerror = (err) => {
+                log('✗ face-api.js 読み込みエラー', 'error');
+                reject(err);
+            };
+            document.head.appendChild(script);
+        });
+
+        // アプリケーションスクリプトの読み込み
+        const scripts = [
+            'js/camera-controller.js',
+            'js/face-analyzer.js',
+            'js/drawing-analyzer.js',
+            'js/stress-tester.js',
+            'js/evaluation-engine.js',
+            'js/character-animator.js',
+            'js/main.js'
+        ];
+
+        async function loadScripts() {
+            for (const scriptPath of scripts) {
+                try {
+                    await new Promise((resolve, reject) => {
+                        const script = document.createElement('script');
+                        script.src = scriptPath;
+                        script.onload = () => {
+                            log(`✓ ${scriptPath} 読み込み成功`, 'success');
+                            resolve();
+                        };
+                        script.onerror = (err) => {
+                            log(`✗ ${scriptPath} 読み込みエラー`, 'error');
+                            reject(err);
+                        };
+                        document.body.appendChild(script);
+                    });
+                } catch (err) {
+                    log(`スクリプト読み込み中断: ${err}`, 'error');
+                }
+            }
+
+            // 全スクリプト読み込み後のチェック
+            setTimeout(() => {
+                log('=== システム初期化チェック ===', 'info');
+                
+                // 必要なクラスの存在確認
+                const requiredClasses = [
+                    'TakumiMeasurementSystem',
+                    'CameraController',
+                    'FaceAnalyzer',
+                    'DrawingAnalyzer',
+                    'StressTester',
+                    'EvaluationEngine',
+                    'CharacterAnimator'
+                ];
+
+                let allClassesPresent = true;
+                for (const className of requiredClasses) {
+                    const exists = typeof window[className] !== 'undefined';
+                    log(`${className}: ${exists ? '✓' : '✗'}`, exists ? 'success' : 'error');
+                    if (!exists) allClassesPresent = false;
+                }
+
+                if (allClassesPresent) {
+                    log('すべての必要なクラスが読み込まれました', 'success');
+                    
+                    // TakumiMeasurementSystemの初期化状態を確認
+                    try {
+                        // DOMContentLoadedイベントが既に発火しているか確認
+                        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+                            log('DOMは既に読み込み完了しています', 'info');
+                        }
+                        
+                        // 手動でシステムを初期化してみる
+                        log('手動でTakumiMeasurementSystemを初期化します...', 'info');
+                        const system = new TakumiMeasurementSystem();
+                        log('✓ TakumiMeasurementSystem初期化成功', 'success');
+                        
+                        // 初期化後のボタン状態を再チェック
+                        setTimeout(() => {
+                            log('=== 初期化後のボタン状態 ===', 'info');
+                            checkButtonState();
+                        }, 100);
+                        
+                    } catch (err) {
+                        log(`TakumiMeasurementSystem初期化エラー: ${err.message}`, 'error');
+                        log(`スタックトレース: ${err.stack}`, 'error');
+                    }
+                } else {
+                    log('必要なクラスが不足しています', 'error');
+                }
+            }, 1000);
+        }
+
+        // 初期チェック
+        Promise.all([loadFaceApi]).then(() => {
+            log('face-api.js読み込み完了、アプリケーションスクリプトを読み込みます', 'info');
+            loadScripts();
+        }).catch(err => {
+            log('初期読み込みエラー: ' + err, 'error');
+        });
+
+        // ページ読み込み完了時の初期チェック
+        window.addEventListener('load', () => {
+            log('=== ページ読み込み完了 ===', 'info');
+            checkButtonState();
+        });
+
+        // HTTPSチェック
+        if (location.protocol !== 'https:') {
+            log('⚠️ HTTPSではありません。カメラアクセスにはHTTPSが必要です', 'warning');
+        } else {
+            log('✓ HTTPS接続です', 'success');
+        }
+
+        // ブラウザAPIチェック
+        log('=== ブラウザAPI対応状況 ===', 'info');
+        log(`getUserMedia: ${navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? '✓' : '✗'}`, 
+            navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? 'success' : 'error');
+        log(`Canvas: ${window.HTMLCanvasElement ? '✓' : '✗'}`, 
+            window.HTMLCanvasElement ? 'success' : 'error');
+    </script>
+</body>
+</html>

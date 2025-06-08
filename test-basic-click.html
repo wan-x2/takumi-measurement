@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>基本クリックテスト</title>
+</head>
+<body style="padding: 50px; font-family: Arial, sans-serif;">
+    <h1>基本的なクリックテスト</h1>
+    
+    <p>以下のボタンをクリックしてください：</p>
+    
+    <!-- 1. 最も基本的なボタン -->
+    <button onclick="alert('成功！基本的なクリックが動作しています')">
+        1. 基本ボタン（onclick属性）
+    </button>
+    
+    <br><br>
+    
+    <!-- 2. JavaScriptなしの送信ボタン -->
+    <form onsubmit="alert('フォーム送信！'); return false;">
+        <button type="submit">2. フォーム送信ボタン</button>
+    </form>
+    
+    <br><br>
+    
+    <!-- 3. リンクとして -->
+    <a href="#" onclick="alert('リンククリック！'); return false;" style="display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px;">
+        3. リンクボタン
+    </a>
+    
+    <br><br>
+    
+    <!-- 4. div要素 -->
+    <div onclick="alert('DIVクリック！')" style="display: inline-block; padding: 10px 20px; background: #28a745; color: white; cursor: pointer; border-radius: 5px;">
+        4. DIV要素（クリック可能）
+    </div>
+    
+    <br><br>
+    
+    <!-- 5. input要素 -->
+    <input type="button" value="5. Input Button" onclick="alert('Input buttonクリック！')">
+    
+    <br><br>
+    
+    <h2>デバッグ情報：</h2>
+    <div id="debug" style="background: #f0f0f0; padding: 20px; border-radius: 5px;">
+        <p>ユーザーエージェント: <span id="userAgent"></span></p>
+        <p>プロトコル: <span id="protocol"></span></p>
+        <p>タッチデバイス: <span id="touchDevice"></span></p>
+        <p>ポインターイベント対応: <span id="pointerEvents"></span></p>
+        <p>マウスイベント: <span id="mouseEvents">クリックしてテスト</span></p>
+    </div>
+    
+    <script>
+        // デバッグ情報の表示
+        document.getElementById('userAgent').textContent = navigator.userAgent;
+        document.getElementById('protocol').textContent = location.protocol;
+        document.getElementById('touchDevice').textContent = 'ontouchstart' in window ? 'はい' : 'いいえ';
+        document.getElementById('pointerEvents').textContent = 'onpointerdown' in window ? 'はい' : 'いいえ';
+        
+        // グローバルイベントリスナー
+        document.addEventListener('click', function(e) {
+            console.log('Document click:', e.target);
+            document.getElementById('mouseEvents').textContent = '✓ クリックイベント検出';
+        });
+        
+        document.addEventListener('mousedown', function(e) {
+            console.log('Document mousedown:', e.target);
+        });
+        
+        document.addEventListener('pointerdown', function(e) {
+            console.log('Document pointerdown:', e.target);
+        });
+        
+        // エラーハンドリング
+        window.onerror = function(msg, url, line) {
+            console.error('Error:', msg, 'at', url + ':' + line);
+        };
+    </script>
+</body>
+</html>

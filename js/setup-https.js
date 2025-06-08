@@ -4,9 +4,29 @@ const fs = require('fs');
 const path = require('path');
 
 const app = express();
-const PORT = 8443;
+const PORT = 8446;
 
-app.use(express.static(path.join(__dirname, '..')));
+// Add explicit routes for model files
+app.get('/models/:file', (req, res) => {
+    const filePath = path.join(__dirname, '..', 'models', req.params.file);
+    if (req.params.file.endsWith('.json')) {
+        res.setHeader('Content-Type', 'application/json');
+    } else {
+        res.setHeader('Content-Type', 'application/octet-stream');
+    }
+    res.sendFile(filePath);
+});
+
+// Serve static files with proper MIME types for face-api models
+app.use(express.static(path.join(__dirname, '..'), {
+    setHeaders: (res, filePath) => {
+        if (filePath.endsWith('.json')) {
+            res.setHeader('Content-Type', 'application/json');
+        } else if (filePath.includes('shard')) {
+            res.setHeader('Content-Type', 'application/octet-stream');
+        }
+    }
+}));
 
 app.use((req, res, next) => {
     res.setHeader('Cross-Origin-Opener-Policy', 'same-origin');

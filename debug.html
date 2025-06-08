@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Debug - Button Test</title>
+    <style>
+        body {
+            padding: 20px;
+            font-family: Arial, sans-serif;
+        }
+        .test-button {
+            padding: 15px 40px;
+            font-size: 1.2em;
+            background: linear-gradient(45deg, #ff6b6b, #4ecdc4);
+            color: white;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        .output {
+            background: #f0f0f0;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            white-space: pre-wrap;
+        }
+        .error {
+            color: red;
+        }
+        .success {
+            color: green;
+        }
+    </style>
+</head>
+<body>
+    <h1>測定開始ボタン デバッグ</h1>
+    
+    <button class="test-button" onclick="testSimpleClick()">シンプルクリックテスト</button>
+    <button class="test-button" id="testButton">イベントリスナーテスト</button>
+    <button class="test-button" id="startButton">測定開始（本番と同じID）</button>
+    
+    <div class="output" id="output">ログ出力:
+    </div>
+    
+    <script>
+        const output = document.getElementById('output');
+        
+        function log(message, isError = false) {
+            const timestamp = new Date().toLocaleTimeString();
+            const className = isError ? 'error' : '';
+            output.innerHTML += `\n<span class="${className}">[${timestamp}] ${message}</span>`;
+            console.log(message, isError ? 'ERROR' : 'INFO');
+        }
+        
+        // Simple click test
+        function testSimpleClick() {
+            log('✓ シンプルクリックテスト成功', false);
+        }
+        
+        // Event listener test
+        document.getElementById('testButton').addEventListener('click', () => {
+            log('✓ イベントリスナーテスト成功', false);
+        });
+        
+        // Test with same ID as production
+        const startButton = document.getElementById('startButton');
+        if (startButton) {
+            log(`測定開始ボタン状態: disabled=${startButton.disabled}, display=${window.getComputedStyle(startButton).display}, visibility=${window.getComputedStyle(startButton).visibility}`);
+            startButton.addEventListener('click', () => {
+                log('✓ 測定開始ボタンのクリックイベント成功', false);
+            });
+        }
+        
+        // Check for JavaScript errors
+        window.addEventListener('error', (e) => {
+            log(`エラー: ${e.message} (${e.filename}:${e.lineno})`, true);
+        });
+        
+        // Check if all required APIs are available
+        log('ブラウザAPI チェック:');
+        log(`- getUserMedia: ${navigator.mediaDevices && navigator.mediaDevices.getUserMedia ? '✓' : '✗'}`);
+        log(`- WebRTC: ${window.RTCPeerConnection ? '✓' : '✗'}`);
+        log(`- Canvas: ${window.HTMLCanvasElement ? '✓' : '✗'}`);
+        
+        // Check HTTPS
+        log(`- HTTPS: ${location.protocol === 'https:' ? '✓' : '✗ (カメラアクセスにはHTTPS必須)'}`);
+        
+        // Test loading JavaScript modules
+        log('\nJavaScriptモジュール ロードテスト:');
+        const modules = [
+            'js/camera-controller.js',
+            'js/face-analyzer.js',
+            'js/drawing-analyzer.js',
+            'js/stress-tester.js',
+            'js/evaluation-engine.js',
+            'js/character-animator.js',
+            'js/main.js'
+        ];
+        
+        let loadedModules = 0;
+        modules.forEach(module => {
+            const script = document.createElement('script');
+            script.src = module;
+            script.onload = () => {
+                loadedModules++;
+                log(`✓ ${module} ロード成功`);
+                if (loadedModules === modules.length) {
+                    log('\n全モジュールロード完了！');
+                    checkMainSystemInitialization();
+                }
+            };
+            script.onerror = () => {
+                log(`✗ ${module} ロードエラー`, true);
+            };
+            document.head.appendChild(script);
+        });
+        
+        // Test loading face-api
+        const faceApiScript = document.createElement('script');
+        faceApiScript.src = 'https://cdn.jsdelivr.net/npm/@vladmandic/face-api@1.7.12/dist/face-api.min.js';
+        faceApiScript.onload = () => {
+            log('✓ face-api.js ロード成功');
+            
+            // Test model loading
+            if (typeof faceapi !== 'undefined') {
+                faceapi.nets.tinyFaceDetector.loadFromUri('/models')
+                    .then(() => log('✓ モデルロード成功'))
+                    .catch(err => log(`モデルロードエラー: ${err.message}`, true));
+            }
+        };
+        faceApiScript.onerror = () => log('face-api.js ロードエラー', true);
+        document.head.appendChild(faceApiScript);
+        
+        // Check main system initialization
+        function checkMainSystemInitialization() {
+            setTimeout(() => {
+                log('\nシステム初期化チェック:');
+                if (typeof TakumiMeasurementSystem !== 'undefined') {
+                    log('✓ TakumiMeasurementSystem クラス定義あり');
+                    try {
+                        const testSystem = new TakumiMeasurementSystem();
+                        log('✓ TakumiMeasurementSystem インスタンス作成成功');
+                        
+                        // Check button state after initialization
+                        const mainStartButton = document.getElementById('startButton');
+                        if (mainStartButton) {
+                            log(`初期化後のボタン状態: disabled=${mainStartButton.disabled}`);
+                        }
+                    } catch (error) {
+                        log(`✗ TakumiMeasurementSystem インスタンス作成エラー: ${error.message}`, true);
+                    }
+                } else {
+                    log('✗ TakumiMeasurementSystem クラスが定義されていません', true);
+                }
+                
+                // Check for required classes
+                const requiredClasses = [
+                    'CameraController',
+                    'FaceAnalyzer',
+                    'DrawingAnalyzer',
+                    'StressTester',
+                    'EvaluationEngine',
+                    'CharacterAnimator'
+                ];
+                
+                requiredClasses.forEach(className => {
+                    if (typeof window[className] !== 'undefined') {
+                        log(`✓ ${className} クラス定義あり`);
+                    } else {
+                        log(`✗ ${className} クラスが定義されていません`, true);
+                    }
+                });
+            }, 1000);
+        }
+    </script>
+</body>
+</html>

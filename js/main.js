@@ -35,8 +35,34 @@ class TakumiMeasurementSystem {
     }
 
     setupEventListeners() {
-        this.startButton.addEventListener('click', () => this.startMeasurement());
-        document.getElementById('retryButton').addEventListener('click', () => this.reset());
+        // デバッグ: ボタンのクリック可能性を確認
+        console.log('Setting up event listeners...');
+        console.log('Start button element:', this.startButton);
+        console.log('Start button computed style:', window.getComputedStyle(this.startButton));
+        
+        // クリックイベントの詳細なデバッグ
+        this.startButton.addEventListener('click', (e) => {
+            console.log('Start button clicked!', e);
+            console.log('Click coordinates:', e.clientX, e.clientY);
+            console.log('Button disabled state:', this.startButton.disabled);
+            this.startMeasurement();
+        });
+        
+        // キャプチャフェーズでもイベントを確認
+        this.startButton.addEventListener('click', (e) => {
+            console.log('Start button clicked (capture phase)');
+        }, true);
+        
+        // ポインターイベントも確認
+        this.startButton.addEventListener('pointerdown', (e) => {
+            console.log('Pointer down on start button');
+        });
+        
+        document.getElementById('retryButton').addEventListener('click', (e) => {
+            console.log('Retry button clicked!', e);
+            e.stopPropagation();
+            this.reset();
+        });
         
         document.addEventListener('click', () => {
             if (this.stressTester.audioContext && this.stressTester.audioContext.state === 'suspended') {
@@ -50,17 +76,32 @@ class TakumiMeasurementSystem {
         this.startButton.disabled = true;
         this.resultsPanel.style.display = 'none';
         
-        const cameraReady = await this.cameraController.initialize();
-        if (!cameraReady) {
+        try {
+            const cameraReady = await this.cameraController.initialize();
+            if (!cameraReady) {
+                console.error('Camera initialization failed');
+                alert('カメラの初期化に失敗しました。ブラウザでカメラへのアクセスを許可してください。');
+                this.startButton.disabled = false;
+                return;
+            }
+            
+            const faceApiReady = await this.faceAnalyzer.initialize();
+            if (!faceApiReady) {
+                console.error('Face API initialization failed');
+                alert('顔認識モデルの読み込みに失敗しました。ページを再読み込みしてください。');
+                this.startButton.disabled = false;
+                return;
+            }
+            
+            this.stressTester.initialize();
+            
+            this.characterAnimator.updateCharacterState(null, 'ready');
+            await this.startSequence();
+        } catch (error) {
+            console.error('Measurement start error:', error);
+            alert('測定の開始中にエラーが発生しました: ' + error.message);
             this.startButton.disabled = false;
-            return;
         }
-        
-        await this.faceAnalyzer.initialize();
-        this.stressTester.initialize();
-        
-        this.characterAnimator.updateCharacterState(null, 'ready');
-        await this.startSequence();
     }
 
     async startSequence() {
@@ -330,6 +371,74 @@ class TakumiMeasurementSystem {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const system = new TakumiMeasurementSystem();
-    console.log('Takumi Measurement System initialized');
+    try {
+        const system = new TakumiMeasurementSystem();
+        console.log('Takumi Measurement System initialized');
+        
+        // Check if button is actually clickable
+        const startButton = document.getElementById('startButton');
+        if (startButton) {
+            console.log('Start button found:', startButton);
+            console.log('Start button disabled:', startButton.disabled);
+            
+            // ボタンの詳細な状態をチェック
+            const rect = startButton.getBoundingClientRect();
+            const style = window.getComputedStyle(startButton);
+            
+            console.log('Button position:', {
+                top: rect.top,
+                left: rect.left,
+                width: rect.width,
+                height: rect.height,
+                visible: rect.width > 0 && rect.height > 0
+            });
+            
+            console.log('Button styles:', {
+                display: style.display,
+                visibility: style.visibility,
+                opacity: style.opacity,
+                pointerEvents: style.pointerEvents,
+                zIndex: style.zIndex,
+                position: style.position,
+                cursor: style.cursor
+            });
+            
+            // クリック位置の要素を確認
+            const centerX = rect.left + rect.width / 2;
+            const centerY = rect.top + rect.height / 2;
+            const elementAtCenter = document.elementFromPoint(centerX, centerY);
+            console.log('Element at button center:', elementAtCenter);
+            console.log('Is it the button?', elementAtCenter === startButton);
+            
+            // 親要素のスタイルも確認
+            let parent = startButton.parentElement;
+            while (parent && parent !== document.body) {
+                const parentStyle = window.getComputedStyle(parent);
+                if (parentStyle.pointerEvents === 'none' || 
+                    parentStyle.display === 'none' || 
+                    parentStyle.visibility === 'hidden') {
+                    console.warn('Parent element blocking clicks:', parent, {
+                        pointerEvents: parentStyle.pointerEvents,
+                        display: parentStyle.display,
+                        visibility: parentStyle.visibility
+                    });
+                }
+                parent = parent.parentElement;
+            }
+            
+            // テストクリックイベントを追加
+            startButton.addEventListener('mouseenter', () => {
+                console.log('Mouse entered button');
+            });
+            
+            startButton.addEventListener('mouseleave', () => {
+                console.log('Mouse left button');
+            });
+            
+        } else {
+            console.error('Start button not found!');
+        }
+    } catch (error) {
+        console.error('Failed to initialize Takumi Measurement System:', error);
+    }
 });

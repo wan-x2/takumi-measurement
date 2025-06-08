@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>シンプルボタンテスト</title>
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+    <div class="container">
+        <h1>シンプルボタンテスト</h1>
+        
+        <div style="margin: 50px; text-align: center;">
+            <button id="testButton1" class="start-button" onclick="alert('インラインクリック成功！')">
+                テスト1 (インライン)
+            </button>
+            
+            <br><br>
+            
+            <button id="testButton2" class="start-button">
+                テスト2 (addEventListener)
+            </button>
+            
+            <br><br>
+            
+            <button id="startButton" class="start-button">
+                測定開始（本番と同じ）
+            </button>
+            
+            <br><br>
+            
+            <button style="padding: 15px 40px; font-size: 1.2em; background: linear-gradient(45deg, #ff6b6b, #4ecdc4); color: white; border: none; border-radius: 30px; cursor: pointer;">
+                スタイルなしボタン
+            </button>
+        </div>
+        
+        <div id="log" style="margin: 50px; padding: 20px; background: #f0f0f0; color: #000; border-radius: 10px; font-family: monospace;">
+            ログ:<br>
+        </div>
+    </div>
+    
+    <script>
+        const log = document.getElementById('log');
+        
+        function addLog(message) {
+            const time = new Date().toLocaleTimeString();
+            log.innerHTML += `${time}: ${message}<br>`;
+            console.log(message);
+        }
+        
+        // テスト2のイベントリスナー
+        document.getElementById('testButton2').addEventListener('click', function(e) {
+            addLog('テスト2ボタンがクリックされました！');
+            alert('addEventListener成功！');
+        });
+        
+        // 本番と同じstartButton
+        document.getElementById('startButton').addEventListener('click', function(e) {
+            addLog('測定開始ボタンがクリックされました！');
+            addLog('イベント詳細: ' + JSON.stringify({
+                type: e.type,
+                target: e.target.id,
+                clientX: e.clientX,
+                clientY: e.clientY
+            }));
+        });
+        
+        // すべてのボタンにマウスイベントを追加
+        document.querySelectorAll('button').forEach(button => {
+            button.addEventListener('mouseenter', function() {
+                addLog(`マウスが ${this.textContent.trim()} に入りました`);
+            });
+            
+            button.addEventListener('mouseleave', function() {
+                addLog(`マウスが ${this.textContent.trim()} から出ました`);
+            });
+            
+            button.addEventListener('mousedown', function() {
+                addLog(`${this.textContent.trim()} でマウスダウン`);
+            });
+            
+            button.addEventListener('mouseup', function() {
+                addLog(`${this.textContent.trim()} でマウスアップ`);
+            });
+        });
+        
+        // グローバルクリックイベント
+        document.addEventListener('click', function(e) {
+            addLog(`ドキュメントクリック: ${e.target.tagName} ${e.target.id || '(no id)'}`);
+        }, true);
+        
+        addLog('ページ読み込み完了');
+    </script>
+</body>
+</html>

@@ -180,6 +180,7 @@ main {
     background: rgba(0, 0, 0, 0.8);
     padding: 20px;
     border-radius: 15px;
+    z-index: 100;
 }
 
 .start-button {
@@ -225,7 +226,7 @@ main {
     border-radius: 20px;
     width: 600px;
     display: none;
-    z-index: 20;
+    z-index: 1000;
 }
 
 .score-display {
@@ -319,6 +320,9 @@ main {
     cursor: pointer;
     font-size: 1.1em;
     transition: background 0.3s;
+    position: relative;
+    z-index: 1001;
+    pointer-events: auto;
 }
 
 .retry-button:hover {

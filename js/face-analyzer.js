@@ -8,9 +8,44 @@ class FaceAnalyzer {
 
     async initialize() {
         try {
-            await faceapi.nets.tinyFaceDetector.loadFromUri('/models');
-            await faceapi.nets.faceLandmark68Net.loadFromUri('/models');
-            await faceapi.nets.faceExpressionNet.loadFromUri('/models');
+            console.log('Loading face-api models...');
+            console.log('Current URL:', window.location.href);
+            console.log('Protocol:', window.location.protocol);
+            
+            // モデルのベースパスを動的に設定
+            const modelPath = window.location.protocol === 'file:' 
+                ? './models' 
+                : '/models';
+            
+            console.log('Model path:', modelPath);
+            
+            // 各モデルを個別に読み込んでエラーを特定
+            try {
+                console.log('Loading tiny face detector...');
+                await faceapi.nets.tinyFaceDetector.loadFromUri(modelPath);
+                console.log('✓ Tiny face detector loaded');
+            } catch (e) {
+                console.error('Failed to load tiny face detector:', e);
+                throw e;
+            }
+            
+            try {
+                console.log('Loading face landmark model...');
+                await faceapi.nets.faceLandmark68Net.loadFromUri(modelPath);
+                console.log('✓ Face landmark model loaded');
+            } catch (e) {
+                console.error('Failed to load face landmark model:', e);
+                throw e;
+            }
+            
+            try {
+                console.log('Loading face expression model...');
+                await faceapi.nets.faceExpressionNet.loadFromUri(modelPath);
+                console.log('✓ Face expression model loaded');
+            } catch (e) {
+                console.error('Failed to load face expression model:', e);
+                throw e;
+            }
             
             this.detectionOptions = new faceapi.TinyFaceDetectorOptions({
                 inputSize: 224,
@@ -18,10 +53,14 @@ class FaceAnalyzer {
             });
             
             this.isModelLoaded = true;
-            console.log('Face-api models loaded successfully');
+            console.log('✓ All face-api models loaded successfully');
             return true;
         } catch (error) {
             console.error('Failed to load face-api models:', error);
+            console.error('Error details:', {
+                message: error.message,
+                stack: error.stack
+            });
             return false;
         }
     }
