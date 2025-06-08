@@ -6,10 +6,8 @@
    - ダウンロード: https://nodejs.org/
    - LTS版を推奨
 
-2. **OpenSSL** (オプション、但し推奨)
-   - ダウンロード: https://slproweb.com/products/Win32OpenSSL.html
-   - Light版で十分です
-
+2. **Git** (git導入でバンドルされるopensslを利用する為)
+   
 ## インストール手順
 
 ### 1. 自動インストール（推奨）
@@ -36,17 +34,9 @@ npm install
 
 #### SSL証明書の生成
 
-**方法1: OpenSSLを使用（推奨）**
 ```batch
 mkdir certs
-openssl req -x509 -newkey rsa:2048 -keyout certs\server.key -out certs\server.crt -days 365 -nodes -subj "/C=JP/ST=Tokyo/L=Tokyo/O=Takumi/CN=localhost"
-```
-
-**方法2: PowerShellを使用**
-管理者権限でPowerShellを開いて：
-```powershell
-Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
-.\scripts\generate-cert.ps1
+bash -c "if command -v openssl >/dev/null 2>&1; then openssl req -x509 -newkey rsa:2048 -keyout certs/server.key -out certs/server.crt -days 365 -nodes -subj '/C=JP/ST=Tokyo/L=Tokyo/O=Takumi/CN=localhost' && echo 'SSL certificates generated successfully.'; else echo 'OpenSSL not found in Git Bash'; exit 1; fi"
 ```
 
 #### モデルファイルのダウンロード
